@@ -142,7 +142,7 @@ const Dashboard = () => {
                                 if (hour < 12) return 'Good Morning';
                                 if (hour < 18) return 'Good Afternoon';
                                 return 'Good Evening';
-                            })()}, {user?.first_name || 'Guest'}
+                            })()}, {user ? `${user.first_name} ${user.last_name}` : 'Guest'}
                         </h4>
 
                         <h1 className={`text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight min-h-[120px] transition-opacity duration-500 ${fade ? 'opacity-100' : 'opacity-0'}`}>
