@@ -1,7 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
+import DashboardLayout from './components/DashboardLayout';
+import DashboardHome from './pages/DashboardHome';
+import Calculator from './pages/Calculator';
+import Deliveries from './pages/Deliveries';
+import Shipping from './pages/Shipping';
+import Settings from './pages/Settings';
 import LandingPage from './pages/LandingPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -24,10 +29,16 @@ function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <DashboardLayout />
                 </ProtectedRoute>
               }
-            />
+            >
+              <Route index element={<DashboardHome />} />
+              <Route path="calculator" element={<Calculator />} />
+              <Route path="deliveries" element={<Deliveries />} />
+              <Route path="shipping" element={<Shipping />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
           </Routes>
         </div>
       </AuthProvider>

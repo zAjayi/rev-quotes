@@ -31,7 +31,7 @@ const Login = () => {
             };
 
             login(token, userData);
-            navigate('/');
+            navigate('/dashboard');
         } catch (err: any) {
             console.error('Login error:', err);
             setError(err.response?.data?.error || 'Invalid email or password');
