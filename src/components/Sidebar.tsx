@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Calculator, Package, Truck, Settings, X } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -10,7 +9,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const location = useLocation();
-    const { user } = useAuth();
 
     const menuItems = [
         { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
