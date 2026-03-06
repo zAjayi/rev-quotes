@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
@@ -19,6 +20,7 @@ interface DeliveryResponse {
 }
 
 const Calculator: React.FC = () => {
+    const navigate = useNavigate();
     const [distance, setDistance] = useState<number>(0);
     const [weight, setWeight] = useState<number>(0);
     const [vehicleType, setVehicleType] = useState<string>('bike');
@@ -28,7 +30,17 @@ const Calculator: React.FC = () => {
     const [bookingLoading, setBookingLoading] = useState(false);
     const [deliveryResult, setDeliveryResult] = useState<DeliveryResponse | null>(null);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showBookingForm, setShowBookingForm] = useState(false);
     const [error, setError] = useState('');
+    
+    // Delivery Details State
+    const [deliveryDetails, setDeliveryDetails] = useState({
+        customer_name: '',
+        customer_phone: '',
+        delivery_address: '',
+        city: '',
+        state: ''
+    });
 
     const handleCalculate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,19 +67,24 @@ const Calculator: React.FC = () => {
         }
     };
 
-    const handleBook = async () => {
+    const handleBook = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         if (!quote) return;
         setBookingLoading(true);
+        setError('');
 
         try {
-            const response = await api.post('/api/v1/deliveries', {
-                quote_id: quote.quote_id
-            });
+            const payload = {
+                quote_id: quote.quote_id,
+                ...deliveryDetails
+            };
+            const response = await api.post('/api/v1/deliveries', payload);
             setDeliveryResult(response.data);
+            setShowBookingForm(false);
             setShowSuccessModal(true);
         } catch (err: any) {
             console.error('Booking error:', err);
-            setError('Failed to book delivery. Please try again.');
+            setError(err.response?.data?.message || 'Failed to book delivery. Please try again.');
         } finally {
             setBookingLoading(false);
         }
@@ -75,10 +92,19 @@ const Calculator: React.FC = () => {
 
     const handleCloseModal = () => {
         setShowSuccessModal(false);
+        setShowBookingForm(false);
         setQuote(null);
         setDeliveryResult(null);
         setDistance(0);
         setWeight(0);
+        setDeliveryDetails({
+            customer_name: '',
+            customer_phone: '',
+            delivery_address: '',
+            city: '',
+            state: ''
+        });
+        navigate('/dashboard/deliveries');
     };
 
     return (
@@ -178,6 +204,84 @@ const Calculator: React.FC = () => {
                             </svg>
                         </Button>
                     </form>
+                ) : showBookingForm ? (
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                            <div>
+                                <h3 className="text-xl font-bold text-gray-900">Delivery Details</h3>
+                                <p className="text-gray-500 text-sm">Please provide recipient information to complete your booking.</p>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-sm text-gray-500">Total Price</div>
+                                <div className="text-xl font-bold text-primary">{quote.currency} {quote.price.toLocaleString()}</div>
+                            </div>
+                        </div>
+
+                        <form id="booking-form" onSubmit={handleBook} className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <Input
+                                    label="Customer Name"
+                                    required
+                                    value={deliveryDetails.customer_name}
+                                    onChange={(e) => setDeliveryDetails({...deliveryDetails, customer_name: e.target.value})}
+                                    placeholder="e.g. Jane Doe"
+                                />
+                                <Input
+                                    label="Customer Phone"
+                                    type="tel"
+                                    required
+                                    value={deliveryDetails.customer_phone}
+                                    onChange={(e) => setDeliveryDetails({...deliveryDetails, customer_phone: e.target.value})}
+                                    placeholder="e.g. +1234567890"
+                                />
+                            </div>
+                            
+                            <Input
+                                label="Delivery Address"
+                                required
+                                value={deliveryDetails.delivery_address}
+                                onChange={(e) => setDeliveryDetails({...deliveryDetails, delivery_address: e.target.value})}
+                                placeholder="e.g. 123 Main St, Apt 4B"
+                            />
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <Input
+                                    label="City"
+                                    required
+                                    value={deliveryDetails.city}
+                                    onChange={(e) => setDeliveryDetails({...deliveryDetails, city: e.target.value})}
+                                    placeholder="e.g. New York"
+                                />
+                                <Input
+                                    label="State/Region"
+                                    required
+                                    value={deliveryDetails.state}
+                                    onChange={(e) => setDeliveryDetails({...deliveryDetails, state: e.target.value})}
+                                    placeholder="e.g. NY"
+                                />
+                            </div>
+                        </form>
+
+                        {error && <p className="text-red-500 text-sm">{error}</p>}
+
+                        <div className="grid grid-cols-2 gap-4 pt-4">
+                            <button
+                                type="button"
+                                onClick={() => setShowBookingForm(false)}
+                                className="w-full rounded-full py-3 text-lg font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                            >
+                                Back
+                            </button>
+                            <Button
+                                type="submit"
+                                form="booking-form"
+                                className="w-full !rounded-full !py-3 text-lg"
+                                isLoading={bookingLoading}
+                            >
+                                Confirm Booking
+                            </Button>
+                        </div>
+                    </div>
                 ) : (
                     <div className="text-center py-6 space-y-6">
                         <div className="inline-flex items-center justify-center p-3 bg-green-50 rounded-full mb-2">
@@ -195,9 +299,8 @@ const Calculator: React.FC = () => {
 
                         <div className="pt-4 space-y-3">
                             <Button
-                                onClick={handleBook}
+                                onClick={() => setShowBookingForm(true)}
                                 className="w-full !rounded-full !py-3 text-lg"
-                                isLoading={bookingLoading}
                             >
                                 Book Delivery
                             </Button>

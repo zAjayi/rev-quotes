@@ -24,7 +24,7 @@ const LandingPage = () => {
             <header className="container mx-auto px-6 py-16 md:py-24 flex flex-col-reverse md:flex-row items-center gap-12">
                 <div className="md:w-1/2 space-y-6">
                     <h1 className="text-4xl md:text-6xl font-extrabold leading-tight text-primary">
-                        Smart Logistics Pricing, <span className="text-primary/80">Simplified.</span>
+                        Logistics Pricing, <span className="text-primary/80">Smart and Simplified.</span>
                     </h1>
                     <p className="text-lg md:text-xl text-gray-600 max-w-lg">
                         Get instant quotes for your delivery needs. Seamless, transparent, and efficient logistics management at your fingertips.

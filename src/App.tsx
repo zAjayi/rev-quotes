@@ -5,6 +5,7 @@ import DashboardLayout from './components/DashboardLayout';
 import DashboardHome from './pages/DashboardHome';
 import Calculator from './pages/Calculator';
 import Deliveries from './pages/Deliveries';
+import Drivers from './pages/Drivers';
 import Shipping from './pages/Shipping';
 import Settings from './pages/Settings';
 import LandingPage from './pages/LandingPage';
@@ -36,6 +37,7 @@ function App() {
               <Route index element={<DashboardHome />} />
               <Route path="calculator" element={<Calculator />} />
               <Route path="deliveries" element={<Deliveries />} />
+              <Route path="drivers" element={<Drivers />} />
               <Route path="shipping" element={<Shipping />} />
               <Route path="settings" element={<Settings />} />
             </Route>

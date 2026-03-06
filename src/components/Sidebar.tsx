@@ -13,7 +13,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const menuItems = [
         { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { path: '/dashboard/calculator', label: 'Calculator', icon: Calculator },
-        { path: '/dashboard/deliveries', label: 'Deliveries', icon: Package, badge: 'Coming Soon' },
+        { path: '/dashboard/deliveries', label: 'Deliveries', icon: Package, badge: 'New' },
         { path: '/dashboard/shipping', label: 'Shipping', icon: Truck, badge: 'Coming Soon' },
         { path: '/dashboard/settings', label: 'Settings', icon: Settings, badge: 'Coming Soon' },
     ];
@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
             {/* Sidebar */}
             <aside
-                className={`fixed top-0 left-0 h-full w-72 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`fixed top-0 left-0 h-screen w-72 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
                     } lg:translate-x-0 lg:static lg:z-auto flex flex-col`}
             >
                 {/* Close button for mobile */}
